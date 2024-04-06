@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livraria do Guten</title>
+</head>
+<body>
+    <form>
+        <label for="search">Pesquisar:</label>
+        <input type="text" id="search" name="search" maxlength="9">
+        <button type="submit">Buscar</button>
+    </form>
+    <div id="books">
+
+    </div>
+</body>
+<script>
+    const form = document.querySelector('form');
+    const books = document.querySelector('#books');
+    document.addEventListener('input', async (event) => {
+        event.preventDefault();
+        let codigo = event.target.value;
+        if(codigo.includes('tt') && codigo.length === 9){
+            const response = await fetch(`https://api.themoviedb.org/3/find/${codigo}?external_source=imdb_id&language=pt-BR`,{
+                headers:{
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlNGM3OTgxYzE5MjEyMmM0Njg5MWRiMmJiM2I0YTY5MSIsInN1YiI6IjY2MGY0NDY3M2Y4ZWRlMDE3Y2UyYThiMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Z7cX4fHRfxhVmTbVEuXvQwPzQdI8532KZViBLp6OvAw'
+                }
+            });
+            const data = await response.json();
+            let resultadoFinal;
+            for (const key in data) {
+                if(data[key].length !== 0){
+                    resultadoFinal = data[key];
+                }
+            }
+            books.innerHTML = JSON.stringify(resultadoFinal);            
+        }
+    });
+</script>
+</html>
