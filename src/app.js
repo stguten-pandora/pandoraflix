@@ -3,7 +3,7 @@ import { getCatalog, getManifest, getStream } from "./controller/addon.controlle
 
 app.get("/manifest.json", getManifest);
 
-app.get("/stream/:type/:id.json", getCatalog);
+app.get("/catalog/:type/:id.json", getCatalog);
 
 app.get("/stream/:type/:id.json", getStream);
 

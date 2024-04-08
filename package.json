@@ -5,16 +5,19 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node -r dotenv/config run.js",
+    "dev": "nodemon -r dotenv/config run.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Gutemberg (aka StGuten)",
   "license": "ISC",
   "dependencies": {
     "compression": "^1.7.4",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "helmet": "^7.1.0",
-    "stremio-addon-sdk": "^1.6.10"
+    "pg": "^8.11.5",
+    "sqlite3": "^5.1.7"
   }
 }
