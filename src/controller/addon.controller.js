@@ -20,11 +20,12 @@ async function getStream(req, res) {
 
     switch (type) {
         case "movie":
-            const streams = await movieStream(type, id);
-            responseControler(res, { streams: streams });
+            const movieStreams = await movieStream(type, id);
+            responseControler(res, { streams: movieStreams });
             break;
-        case "serie":
-
+        case "series":
+            //const serieStreams = await serieStream(type, id);
+            //responseControler(res, { streams: serieStreams });
             break;
         default:
             responseControler(res, { error: "Unsupported type " + type });
@@ -39,7 +40,8 @@ async function getCatalog(req, res) {
             let metas = await movieCatalog();
             responseControler(res, { metas: metas });
             break;
-        case "serie":
+        case "series":
+            responseControler(res, { metas: []});
             break;
         default:
             responseControler(res, { error: "Unsupported type " + type });
