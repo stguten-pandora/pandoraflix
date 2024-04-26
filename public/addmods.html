@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pixel Movies Addon</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+</head>
+
+<body class="layout-top-nav" style="height: auto;">
+  <div class="wrapper">
+    <div class="content-wrapper">
+      <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1>Adicionar ao catalogo</h1>
+            </div>
+          </div>
+        </div>
+      </section>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><b>Insira o codigo</b></h3>
+          </div>
+          <form>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm">
+                  <div class="form-group">
+                    <label for="codigoImdb">Codigo</label>
+                    <input type="text" class="form-control" id="codigoImdb" placeholder="Nome do mod">
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <div class="form-group">
+                    <label for="typeSerie">Tipo</label>
+                    <input type="text" class="form-control" id="typeSerie" disabled>
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <div class="form-group">
+                    <label for="nomeSerie">Nome</label>
+                    <input type="text" class="form-control" id="nomeSerie" disabled>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm">
+                  <div class="form-group">
+                    <label for="sinopse">Sinopse</label>
+                    <textarea id="sinopse" class="form-control" rows="3" style="height: 116px;" disabled></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm">
+                  <div class="form-group">
+                    <label for="imdbNote">Nota Imdb</label>
+                    <input type="text" class="form-control" id="imdbNote" disabled>
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <div class="form-group">
+                    <label>Ano de Lançamento</label>
+                    <input type="text" class="form-control" id="releaseInfo" disabled>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm">
+                  <div class="form-group">
+                    <label for="poster">Poster</label>
+                    <input type="text" class="form-control" id="poster" disabled>
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <div class="form-group">
+                    <label for="background">Background</label>
+                    <input type="text" class="form-control" id="background" disabled>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-primary float-right">Enviar</button>
+            </div>
+
+          </form>
+        </div>
+    </div>
+  </div>
+  <script src="./js/tmdb.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0-beta/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/js/adminlte.min.js"></script>
+</body>
+
+</html>

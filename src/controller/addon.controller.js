@@ -1,5 +1,7 @@
 import manifest from "../../.data/manifest.json" assert { type: "json" };
 import { movieCatalog, movieStream } from "./filmes.controller.js";
+import { getMovieMeta } from "./meta.controller.js";
+import { getTmdbId } from "./tmdb.controller.js";
 
 async function responseControler(res, data) {
     res.set({
@@ -8,36 +10,19 @@ async function responseControler(res, data) {
         "Content-Type": "application/json"
     });
 
-    res.json(data);
+    res.send(data);
 }
 
 async function getManifest(req, res) {
     responseControler(res, manifest);
 };
 
-async function getStream(req, res) {
-    const { type, id } = req.params;
-
-    switch (type) {
-        case "movie":
-            const movieStreams = await movieStream(type, id);
-            responseControler(res, { streams: movieStreams });
-            break;
-        case "series":
-            //const serieStreams = await serieStream(type, id);
-            //responseControler(res, { streams: serieStreams });
-            break;
-        default:
-            responseControler(res, { error: "Unsupported type " + type });
-            break;
-    }
-}
-
 async function getCatalog(req, res) {
     const { type } = req.params;
     switch (type) {
         case "movie":
             let metas = await movieCatalog();
+
             responseControler(res, { metas: metas });
             break;
         case "series":
@@ -50,6 +35,43 @@ async function getCatalog(req, res) {
 
 }
 
+async function getStream(req, res) {
+    const { type, id } = req.params;
+
+    switch (type) {
+        case "movie":
+            const movieStreams = await movieStream(id);
+            responseControler(res, { streams: movieStreams });
+            break;
+        case "series":
+            //const serieStreams = await serieStream(type, id);
+            //responseControler(res, { streams: serieStreams });
+            break;
+        default:
+            responseControler(res, { error: "Unsupported type " + type });
+            break;
+    }
+}
+
+async function getMeta(req, res){
+    const { type, id } = req.params;
+    console.log(req.params);
+    const tmdbId = await getTmdbId(id);
+
+    switch (type) {
+        case "movie":
+            const movieMeta = await getMovieMeta(tmdbId);
+            console.log(movieMeta);
+            responseControler(res, movieMeta);
+            break;
+        case "series":
+            break;
+        default:
+            responseControler(res, { error: "Unsupported type " + type });
+            break;
+    }
+}
+
 async function paramDef(req, res, next, val) {
     if (manifest.types.includes(val)) {
         next();
@@ -58,4 +80,4 @@ async function paramDef(req, res, next, val) {
     }
 }
 
-export { getManifest, getCatalog, getStream, paramDef }
+export { getManifest, getCatalog, getStream, getMeta, paramDef }

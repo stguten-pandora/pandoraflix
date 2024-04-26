@@ -6,7 +6,7 @@ async function seriesCatalog() {
 }
 
 //TO DO: Implementar a lógica para retornar o stream de séries
-async function movieStream(id) {
+async function seriesStream(id) {
     /* const resposta = await getFilmeById(id);
     const stream = resposta.map((item) => {
         return {
@@ -19,4 +19,4 @@ async function movieStream(id) {
     return [];
 }
 
-export { movieCatalog, movieStream };
+export { seriesCatalog, seriesStream };
