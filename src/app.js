@@ -5,8 +5,8 @@ app.get("/manifest.json", getManifest);
 
 app.get("/catalog/:type/:id.json", getCatalog);
 
-app.get("/stream/:type/:id.json", getStream);
-
 app.get("/meta/:type/:id.json", getMeta);
+
+app.get("/stream/:type/:id.json", getStream);
 
 export default app;

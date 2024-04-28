@@ -36,18 +36,9 @@ async function getMovieMeta(tmdbId) {
         ...Utils.parseCreditsLink(movieMeta.credits)
       ),
       behaviorHints: {
-        defaultVideoId: movieMeta.imdb_id,
+        defaultVideoId: movieMeta.imdb_id ? movieMeta.imdb_id : `pd:${movieMeta.imdb_id}`,
         hasScheduledVideos: false
-      },
-      videos: [
-        {
-          id: movieMeta.imdb_id ,
-          title: "",
-          released: movieMeta.release_date
-            ? new Date(movieMeta.release_date).toISOString()
-            : new Date().toISOString(),
-        },
-      ],
+      }
     };
 
     return Promise.resolve({meta});

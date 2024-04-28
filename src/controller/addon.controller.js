@@ -43,8 +43,6 @@ async function getStream(req, res) {
             responseControler(res, { streams: movieStreams });
             break;
         case "series":
-            //const serieStreams = await serieStream(type, id);
-            //responseControler(res, { streams: serieStreams });
             break;
         default:
             responseControler(res, { error: "Unsupported type " + type });
