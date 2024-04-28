@@ -35,10 +35,11 @@ async function getCatalog(req, res) {
 
 async function getStream(req, res) {
     const { type, id } = req.params;
+    const movieId = (id.includes("pd") ? id.split(":")[1] : id);
 
     switch (type) {
         case "movie":
-            const movieStreams = await movieStream(id);
+            const movieStreams = await movieStream(movieId);
             responseControler(res, { streams: movieStreams });
             break;
         case "series":
