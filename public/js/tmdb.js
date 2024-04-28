@@ -1,10 +1,6 @@
 const books = document.querySelector('#codigoImdb');
 const nome = document.querySelector('#nomeSerie');
-const sinopse = document.querySelector('#sinopse');
 const type = document.querySelector('#typeSerie');
-const notaImdb = document.querySelector('#imdbNote');
-const releaseInfo = document.querySelector('#releaseInfo');
-const poster = document.querySelector('#poster');
 
 document.addEventListener('input', async (event) => {
     event.preventDefault();
@@ -22,12 +18,7 @@ document.addEventListener('input', async (event) => {
                 resultadoFinal = data[key];
             }
         }
-        console.log(resultadoFinal[0]);
         nome.value = resultadoFinal[0].title || resultadoFinal[0].name;
-        sinopse.innerHTML = resultadoFinal[0].overview;
-        type.value = resultadoFinal[0].media_type.charAt(0).toUpperCase() + resultadoFinal[0].media_type.slice(1);   
-        notaImdb.value = resultadoFinal[0].vote_average;   
-        releaseInfo.value = resultadoFinal[0].release_date ? resultadoFinal[0].release_date.split('-')[0] : resultadoFinal[0].first_air_date.split('-')[0];    
-        poster.src = `https://image.tmdb.org/t/p/w500${resultadoFinal[0].poster_path}`; 
+        type.value = resultadoFinal[0].media_type;
     }
 });

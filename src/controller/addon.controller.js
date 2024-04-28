@@ -10,7 +10,7 @@ async function responseControler(res, data) {
         "Content-Type": "application/json"
     });
 
-    res.send(data);
+    res.json(data);
 }
 
 async function getManifest(req, res) {
@@ -22,7 +22,6 @@ async function getCatalog(req, res) {
     switch (type) {
         case "movie":
             let metas = await movieCatalog();
-
             responseControler(res, { metas: metas });
             break;
         case "series":
@@ -32,7 +31,6 @@ async function getCatalog(req, res) {
             responseControler(res, { error: "Unsupported type " + type });
             break;
     }
-
 }
 
 async function getStream(req, res) {
@@ -55,13 +53,11 @@ async function getStream(req, res) {
 
 async function getMeta(req, res){
     const { type, id } = req.params;
-    console.log(req.params);
-    const tmdbId = await getTmdbId(id);
+    const tmdbId = (id.includes("pd") ? id.split(":")[1] : await getTmdbId(id));
 
     switch (type) {
         case "movie":
             const movieMeta = await getMovieMeta(tmdbId);
-            console.log(movieMeta);
             responseControler(res, movieMeta);
             break;
         case "series":

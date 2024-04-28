@@ -24,7 +24,7 @@ async function getMovieMeta(tmdbId) {
       background: `https://image.tmdb.org/t/p/original${movieMeta.backdrop_path}`,
       poster: `https://image.tmdb.org/t/p/w500${movieMeta.poster_path}`,
       runtime: Utils.parseRunTime(movieMeta.runtime),
-      id: movieMeta.imdb_id,
+      id: `pd:${movieMeta.imdb_id}`,
       genres: Utils.parseGenres(movieMeta.genres),
       logo: `https://images.metahub.space/logo/medium/${movieMeta.imdb_id}/img`,
       releaseInfo: movieMeta.release_date ? movieMeta.release_date.substring(0, 4) : "",
@@ -37,7 +37,7 @@ async function getMovieMeta(tmdbId) {
       ),
       behaviorHints: {
         defaultVideoId: movieMeta.imdb_id,
-        hasScheduledVideos: true
+        hasScheduledVideos: false
       },
       videos: [
         {
@@ -50,7 +50,7 @@ async function getMovieMeta(tmdbId) {
       ],
     };
 
-    return { meta };
+    return Promise.resolve({meta});
 }
 
 export { getMovieMeta };

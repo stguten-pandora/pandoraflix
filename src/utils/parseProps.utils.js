@@ -71,12 +71,12 @@ function parseShareLink(title, imdb_id, type) {
     };
 }
 
-function parseGenreLink(genres, type, language) {
+function parseGenreLink(genres, type) {
     return genres.map((genre) => {
         return {
             name: genre.name,
             category: "Genres",
-            url: `stremio:///discover/${encodeURIComponent(process.env.HOST_NAME)}%2Fmanifest.json/${type}?genre=${encodeURIComponent(
+            url: `stremio:///discover/${encodeURIComponent(process.env.HOST_NAME)}%2Fmanifest.json/${type}/pixeldrainmovies.dev?genre=${encodeURIComponent(
                 genre.name
             )}`,
         };
