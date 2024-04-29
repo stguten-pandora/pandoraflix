@@ -15,7 +15,7 @@ document.addEventListener('input', async (event) => {
         let resultadoFinal;
         for (const key in data) {
             if(data[key].length !== 0){
-                resultadoFinal = data[key];
+                resultadoFinal = data[key].id;
             }
         }
         nome.value = resultadoFinal[0].title || resultadoFinal[0].name;

@@ -1,6 +1,7 @@
 import manifest from "../../.data/manifest.json" assert { type: "json" };
-import { movieCatalog, movieStream } from "./filmes.controller.js";
-import { getMovieMeta } from "./meta.controller.js";
+import { getMovieCatalog, getMovieStream } from "./filmes.controller.js";
+import { getMovieMeta, getSeriesMeta } from "./meta.controller.js";
+import { getSeriesCatalog, getSerieStream } from "./series.controller.js";
 import { getTmdbId } from "./tmdb.controller.js";
 
 async function responseControler(res, data) {
@@ -21,11 +22,12 @@ async function getCatalog(req, res) {
     const { type } = req.params;
     switch (type) {
         case "movie":
-            let metas = await movieCatalog();
-            responseControler(res, { metas: metas });
+            const movieMetas = await getMovieCatalog();
+            responseControler(res, { metas: movieMetas });
             break;
         case "series":
-            responseControler(res, { metas: []});
+            const seriesMetas = await getSeriesCatalog();
+            responseControler(res, { metas: seriesMetas});
             break;
         default:
             responseControler(res, { error: "Unsupported type " + type });
@@ -39,10 +41,12 @@ async function getStream(req, res) {
 
     switch (type) {
         case "movie":
-            const movieStreams = await movieStream(movieId);
+            const movieStreams = await getMovieStream(movieId);
             responseControler(res, { streams: movieStreams });
             break;
         case "series":
+            const serieStream = await getSerieStream(movieId);
+            responseControler(res, { streams: serieStream });
             break;
         default:
             responseControler(res, { error: "Unsupported type " + type });
@@ -52,7 +56,7 @@ async function getStream(req, res) {
 
 async function getMeta(req, res){
     const { type, id } = req.params;
-    const tmdbId = (id.includes("pd") ? id.split(":")[1] : await getTmdbId(id));
+    const tmdbId = (id.includes("pd") ? await getTmdbId(id.split(":")[1]) : await getTmdbId(id));
 
     switch (type) {
         case "movie":
@@ -60,6 +64,8 @@ async function getMeta(req, res){
             responseControler(res, movieMeta);
             break;
         case "series":
+            const seriesMeta = await getSeriesMeta(tmdbId);
+            responseControler(res, seriesMeta);
             break;
         default:
             responseControler(res, { error: "Unsupported type " + type });

@@ -5,9 +5,9 @@ async function getFilmes() {
     return result.rows;
 }
 
-async function getFilmeById(id) {
-    const result = await pool.query(`select f."name" , unnest(f.links) as links from addon.filmes f where f."id" = $1`, [id]);
+async function getFilmeStreamById(id) {
+    const result = await pool.query(`select "name" , jsonb_object_keys(unnest(links)) as qualidade, unnest(links) ->> jsonb_object_keys(unnest(links)) as link from addon.filmes where "id" = $1`, [id]);
     return result.rows;
 }
 
-export { getFilmes, getFilmeById };
+export { getFilmes, getFilmeStreamById };

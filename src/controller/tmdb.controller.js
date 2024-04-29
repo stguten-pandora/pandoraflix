@@ -19,7 +19,11 @@ async function getGenreList(type) {
 
 async function getTmdbId(imdbId){
     const result = await tmdb.find({ id: imdbId, external_source: 'imdb_id', language: 'pt-BR'});
-    return result.movie_results[0].id;
+    for (const key in result) {
+        if(result[key].length !== 0){
+            return result[key][0].id;
+        }
+    }    
 }
 
-export { getGenreList, getTmdbId };
+export { getGenreList, getTmdbId};

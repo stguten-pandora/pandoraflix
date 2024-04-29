@@ -1,8 +1,8 @@
-import { getFilmeById, getFilmes } from "../repository/filmes.repository.js";
 import tmdb from "../config/tmdb.config.js";
+import { getFilmeStreamById, getFilmes } from "../repository/filmes.repository.js";
 import { getGenreList } from "./tmdb.controller.js";
 
-async function movieCatalog() {
+async function getMovieCatalog() {
     const catalog = new Array();
     const filmes = await getFilmes();
 
@@ -27,16 +27,16 @@ async function movieCatalog() {
     return catalog || [];
 }
 
-async function movieStream(id) {
-    const resposta = await getFilmeById(id);
+async function getMovieStream(id) {
+    const resposta = await getFilmeStreamById(id);
     const stream = resposta.map((item) => {
         return {
-            name: `Pixel Movies - ${Object.keys(item.links)}`,
-            description: `${item.name.replace(",", "")} - ${Object.keys(item.links)}, Obrigado por utilizar o Pixel Movies!, Contribua em livepix.gg/stguten`,
-            url: item.links[Object.keys(item.links)]
+            name: `Pixel Movies - ${item.qualidade}`,
+            description: `${item.name.replace(",", "")} - ${item.qualidade}, Obrigado por utilizar o Pixel Movies!, Contribua em livepix.gg/stguten`,
+            url: item.link
         }
     });
     return stream || [];
 }
 
-export { movieCatalog, movieStream };
+export { getMovieCatalog, getMovieStream };
