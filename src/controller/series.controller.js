@@ -1,5 +1,5 @@
 import tmdb from "../config/tmdb.config.js";
-import { getSeries, getSeriesEpsStreamById } from "../repository/series.repository.js";
+import { getSeries, getSeriesEpsStreamById, inserirSeries } from "../repository/series.repository.js";
 import { getGenreList } from "./tmdb.controller.js";
 
 async function getSeriesCatalog() {
@@ -9,19 +9,20 @@ async function getSeriesCatalog() {
     for (const serie of series) {
         const result = await tmdb.find({ id: serie.id, external_source: 'imdb_id', language: 'pt-BR'});
         const genreList = await getGenreList("movie");
-        const movie = result.tv_results[0];
+        const serieInfo = result.tv_results[0];
+        
         catalog.push({
             id: `pd:${serie.id}`,
-            name: movie.title,
-            genre: movie.genre_ids.map(genre => genreList.find((x) => x.id === genre).name),
-            poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-            background: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
+            name: serieInfo.name,
+            genre: serieInfo.genre_ids.map(genre => genreList.find((x) => x.id === genre).name),
+            poster: `https://image.tmdb.org/t/p/w500${serieInfo.poster_path}`,
+            background: `https://image.tmdb.org/t/p/original${serieInfo.backdrop_path}`,
             logo: `https://images.metahub.space/logo/medium/${serie.id}/img`,
             posterShape: "regular",
-            imdbRating: movie.vote_average.toFixed(1),
-            year: movie.first_air_date ? movie.first_air_date.substring(0,4) : "",
+            imdbRating: serieInfo.vote_average.toFixed(1),
+            year: serieInfo.first_air_date ? serieInfo.first_air_date.substring(0,4) : "",
             type: "series",
-            description: movie.overview,
+            description: serieInfo.overview,
         }); 
     }
     return catalog || [];
@@ -39,4 +40,15 @@ async function getSerieStream(id) {
     return stream || []; 
 }
 
-export { getSeriesCatalog , getSerieStream};
+async function adicionarSerie(req, res, next){
+    const { codigo, nome, temporada, episodio, qualidade1080, qualidade720, qualidade480 } = req.body;
+    const obj1080 = { "1080p": qualidade1080 };
+    const obj720 = { "720p": qualidade720 };
+    const obj480 = { "480p": qualidade480 };
+
+    const response = await inserirSeries([codigo, nome, obj1080, obj720, obj480, temporada, episodio]);
+
+    res.status(200).send(response ? { status: true } : { status: false });
+}
+
+export { getSeriesCatalog , getSerieStream, adicionarSerie};

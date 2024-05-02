@@ -10,4 +10,18 @@ async function getFilmeStreamById(id) {
     return result.rows;
 }
 
-export { getFilmes, getFilmeStreamById };
+async function inserirFilmes(dados){
+    try {
+        const result = await pool.query(`INSERT INTO addon.filmes VALUES ($1, $2, array[$3, $4, $5]::jsonb[])`, dados);
+        return result;        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function atualizarLinksFilmes(dados){
+    const result = await pool.query(`UPDATE addon.filmes SET links = array['{"1080p": $2, "720p": $3, "480p": $4}']::jsonb[] WHERE id = $1`, dados);
+    return result;
+}
+
+export { getFilmes, getFilmeStreamById, inserirFilmes, atualizarLinksFilmes };

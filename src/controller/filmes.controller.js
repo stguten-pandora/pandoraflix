@@ -1,5 +1,5 @@
 import tmdb from "../config/tmdb.config.js";
-import { getFilmeStreamById, getFilmes } from "../repository/filmes.repository.js";
+import { getFilmeStreamById, getFilmes, inserirFilmes } from "../repository/filmes.repository.js";
 import { getGenreList } from "./tmdb.controller.js";
 
 async function getMovieCatalog() {
@@ -7,7 +7,7 @@ async function getMovieCatalog() {
     const filmes = await getFilmes();
 
     for (const filme of filmes) {
-        const result = await tmdb.find({ id: filme.id, external_source: 'imdb_id', language: 'pt-BR'});
+        const result = await tmdb.find({ id: filme.id, external_source: 'imdb_id', language: 'pt-BR' });
         const genreList = await getGenreList("movie");
         const movie = result.movie_results[0];
         catalog.push({
@@ -19,7 +19,7 @@ async function getMovieCatalog() {
             logo: `https://images.metahub.space/logo/medium/${filme.id}/img`,
             posterShape: "regular",
             imdbRating: movie.vote_average.toFixed(1),
-            year: movie.release_date ? movie.release_date.substring(0,4) : "",
+            year: movie.release_date ? movie.release_date.substring(0, 4) : "",
             type: "movie",
             description: movie.overview,
         });
@@ -38,5 +38,16 @@ async function getMovieStream(id) {
     });
     return stream || [];
 }
+async function adicionarFilme(req, res, next) {
+    if (req.params.tipo === 'serie') next();
+    const { codigo, nome, qualidade1080, qualidade720, qualidade480 } = req.body;
+    const obj1080 = { "1080p": qualidade1080 };
+    const obj720 = { "720p": qualidade720 };
+    const obj480 = { "480p": qualidade480 };
 
-export { getMovieCatalog, getMovieStream };
+    const response = await inserirFilmes([codigo, nome, obj1080, obj720, obj480]);
+
+    res.status(200).send(response ? { status: true } : { status: false });
+}
+
+export { getMovieCatalog, getMovieStream, adicionarFilme };

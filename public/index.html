@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pixel Movies Addon</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap"rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
 </head>
 
@@ -48,8 +48,6 @@
                     <input type="text" class="form-control" id="nomeSerie" disabled>
                   </div>
                 </div>
-              </div>
-              <div class="row">
                 <div class="col-sm">
                   <div class="form-group">
                     <label for="anoSerie">Ano</label>
@@ -57,11 +55,44 @@
                   </div>
                 </div>
               </div>
+              <div class="row" >
+                <div class="col-sm">
+                  <div class="form-group" style="display: none;" id="temporadaDiv">
+                    <label for="temporada">Temporada</label>
+                    <input type="text" class="form-control" id="temporada" disabled>
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <div class="form-group" style="display: none;" id="episodioDiv">
+                    <label for="episodio">Episodio</label>
+                    <input type="text" class="form-control" id="episodio" disabled>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm">
+                  <div class="form-group">
+                    <label for="qualidade1080">1080p</label>
+                    <input type="text" class="form-control" id="qualidade1080" value="https://pixeldrain.com/api/file/" disabled>
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <div class="form-group">
+                    <label for="qualidade720">720p</label>
+                    <input type="text" class="form-control" id="qualidade720" value="https://pixeldrain.com/api/file/" disabled>
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <div class="form-group">
+                    <label for="qualidade480">480p</label>
+                    <input type="text" class="form-control" id="qualidade480" value="https://pixeldrain.com/api/file/" disabled>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="card-footer">
               <button type="submit" class="btn btn-primary float-right">Enviar</button>
             </div>
-
           </form>
         </div>
     </div>
