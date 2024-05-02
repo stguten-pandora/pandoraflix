@@ -87,7 +87,7 @@ document.addEventListener('submit', async (event) => {
             });
             break;
     }
-    const response = await fetch(type.value === 'movie' ? '/adicionar/movie' : '/adicionar/serie' ,{
+    const response = await fetch(type.value === 'movie' ? './adicionar/movie' : './adicionar/serie' ,{
         method: 'POST',
         headers: { 'Content-Type': 'application/json; charset=UTF-8' },
         body: JSON.stringify(dados)
