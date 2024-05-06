@@ -1,6 +1,7 @@
 import tmdb from "../config/tmdb.config.js";
 import getEpisodes from "../utils/getEpisodes.utils.js";
 import * as Utils from "../utils/parseProps.utils.js";
+import { getLogos } from "./tmdb.controller.js";
 
 async function getMovieMeta(tmdbId) {
   try {
@@ -8,7 +9,6 @@ async function getMovieMeta(tmdbId) {
     const language = "pt-BR";
 
     const movieMeta = await tmdb.movieInfo({ id: tmdbId, language: language, append_to_response: "videos,credits" });
-    const movieImages = await tmdb.movieImages({ id: tmdbId, language: language.substring(0, 2)});
 
     const meta = {
       imdb_id: movieMeta.imdb_id,
@@ -30,7 +30,7 @@ async function getMovieMeta(tmdbId) {
       runtime: Utils.parseRunTime(movieMeta.runtime),
       id: `pd:${movieMeta.imdb_id}`,
       genres: Utils.parseGenres(movieMeta.genres),
-      logo: images.logos.length > 0 ? `https://image.tmdb.org/t/p/original${movieImages.logos[0].file_path}` : `https://images.metahub.space/logo/medium/${movieMeta.imdb_id}/img`,
+      logo: await getLogos(tmdbId, "movie") || `https://images.metahub.space/logo/medium/${movieMeta.imdb_id}/img`,
       releaseInfo: movieMeta.release_date ? movieMeta.release_date.substring(0, 4) : "",
       trailerStreams: Utils.parseTrailerStream(movieMeta.videos),
       links: new Array(
@@ -47,6 +47,7 @@ async function getMovieMeta(tmdbId) {
 
     return Promise.resolve({ meta });
   } catch (error) {
+    console.log(error);
     return Promise.resolve({meta : {} });
   }
 }
