@@ -6,7 +6,7 @@ async function getGenreList(type) {
             case "movie":
                 const genreMovie = await tmdb.genreMovieList({ language: 'pt-BR' });
                 return genreMovie.genres || [];
-            case "series":
+            case "serie":
                 const genreSeries = await tmdb.genreTvList({ language: 'pt-BR' });
                 return genreSeries.genres || [];
             default:
@@ -26,4 +26,17 @@ async function getTmdbId(imdbId){
     }    
 }
 
-export { getGenreList, getTmdbId};
+async function getLogos(tmdbId, type){
+    switch (type) {
+        case "movie":
+            const imagemFilme = await tmdb.movieImages({ id: tmdbId, language: 'pt'});
+            return imagemFilme.logos.length > 0 ? `https://image.tmdb.org/t/p/original${imagemFilme.logos[0].file_path}` : null;
+        case "serie":
+            const imagemSerie = await tmdb.tvImages({ id: tmdbId, language: 'pt'});
+            return imagemSerie.logos.length > 0 ? `https://image.tmdb.org/t/p/original${imagemSerie.logos[0].file_path}` : null;  
+        default:
+            break;
+    }
+}
+
+export { getGenreList, getTmdbId, getLogos};
