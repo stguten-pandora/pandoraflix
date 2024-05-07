@@ -61,7 +61,6 @@ async function getMeta(req, res){
     switch (type) {
         case "movie":
             const movieMeta = await getMovieMeta(tmdbId);
-            //console.log(movieMeta);
             responseControler(res, movieMeta);
             break;
         case "series":

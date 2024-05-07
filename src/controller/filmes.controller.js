@@ -39,6 +39,7 @@ async function getMovieStream(id) {
     });
     return stream || [];
 }
+
 async function adicionarFilme(req, res, next) {
     if (req.params.tipo === 'serie') next();
     const { codigo, nome, qualidade1080, qualidade720, qualidade480 } = req.body;
