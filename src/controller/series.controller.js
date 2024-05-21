@@ -33,14 +33,14 @@ async function getSerieStream(id) {
     const stream = resposta.map((item) => {
         return {
             name: `Pixel Séries - ${item.qualidade}`,
-            description: `${item.name.replace(",", "")} - ${item.qualidade}\n Obrigado por utilizar o Pixel Séries!\n Contribua em livepix.gg/stguten`,
+            description: `${item.name.replace(",", "")} - ${item.qualidade}\nObrigado por utilizar o Pixel Séries!\nContribua em livepix.gg/stguten`,
             url: item.link
         }
     });
     return stream || []; 
 }
 
-async function adicionarSerie(req, res, next){
+async function adicionarSerie(req, res){    
     const { codigo, nome, temporada, episodio, qualidade1080, qualidade720, qualidade480 } = req.body;
     const obj1080 = { "1080p": qualidade1080 };
     const obj720 = { "720p": qualidade720 };

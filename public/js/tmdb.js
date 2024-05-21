@@ -13,6 +13,18 @@ const episodioDiv = document.querySelector('#episodioDiv');
 const temporada = document.querySelector('#temporada');
 const episodio = document.querySelector('#episodio');
 
+function qualidadeInputSwitcher(status) {
+    if (status === 'enable') {
+        qualidade1080.removeAttribute('disabled')
+        qualidade720.removeAttribute('disabled')
+        qualidade480.removeAttribute('disabled')
+    } else {
+        qualidade1080.setAttribute('disabled', 'disabled')
+        qualidade720.setAttribute('disabled', 'disabled')
+        qualidade480.setAttribute('disabled', 'disabled')
+    }
+}
+
 document.getElementById('codigoImdb').addEventListener('input', async (event) => {
     event.preventDefault();
     let codigo = event.target.value;
@@ -23,28 +35,24 @@ document.getElementById('codigoImdb').addEventListener('input', async (event) =>
             }
         });
         const data = await response.json();
-        let resultadoFinal;
-        for (const key in data) {
-            if (data[key].length !== 0) {
-                resultadoFinal = data[key];
-                if (key == 'tv_results') {
-                    temporadaDiv.style.display = 'block';
-                    episodioDiv.style.display = 'block';
+        const { movie_results, tv_results } = data;
+        let resultadoFinal = movie_results.length !== 0 ? movie_results : tv_results;
+        
+        if (tv_results.length !== 0) {
+            temporadaDiv.style.display = 'block';
+            episodioDiv.style.display = 'block';
 
-                    temporada.removeAttribute('disabled');
-                    episodio.removeAttribute('disabled');
-                } else {
-                    temporadaDiv.style.display = 'none';
-                    episodioDiv.style.display = 'none';
+            temporada.removeAttribute('disabled');
+            episodio.removeAttribute('disabled');
+        } else {
+            temporadaDiv.style.display = 'none';
+            episodioDiv.style.display = 'none';
 
-                    temporada.setAttribute('disabled', 'disabled');
-                    episodio.setAttribute('disabled', 'disabled');
-                }
-                qualidade480.removeAttribute('disabled');
-                qualidade720.removeAttribute('disabled');
-                qualidade1080.removeAttribute('disabled');
-            }
+            temporada.setAttribute('disabled', 'disabled');
+            episodio.setAttribute('disabled', 'disabled');
         }
+        qualidadeInputSwitcher("enable");
+
         nome.value = resultadoFinal[0].title || resultadoFinal[0].name;
         type.value = resultadoFinal[0].media_type;
         ano.value = resultadoFinal[0].release_date ? resultadoFinal[0].release_date.substring(0, 4) : resultadoFinal[0].first_air_date.substring(0, 4);
@@ -55,10 +63,7 @@ document.getElementById('codigoImdb').addEventListener('input', async (event) =>
         nome.value = '';
         type.value = '';
         ano.value = '';
-
-        qualidade480.setAttribute('disabled', 'disabled');
-        qualidade720.setAttribute('disabled', 'disabled');
-        qualidade1080.setAttribute('disabled', 'disabled');
+        qualidadeInputSwitcher();
     }
 });
 
@@ -87,11 +92,14 @@ document.addEventListener('submit', async (event) => {
             });
             break;
     }
-    const response = await fetch(type.value === 'movie' ? './adicionar/movie' : './adicionar/serie' ,{
+    const response = await fetch(type.value === 'movie' ? './adicionar/movie' : './adicionar/serie', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json; charset=UTF-8' },
         body: JSON.stringify(dados)
     });
     const data = await response.json();
     alert(data.status ? 'Adicionado com sucesso!' : 'Erro ao adicionar!');
+
+    codigo.value = '';
+    qualidade1080.value = qualidade720.value = qualidade480.value = 'https://pixeldrain.com/api/file/';
 });

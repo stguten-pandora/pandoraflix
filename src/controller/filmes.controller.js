@@ -6,7 +6,7 @@ async function getMovieCatalog() {
     const catalog = new Array();
     const filmes = await getFilmes();
 
-    for (const filme of filmes) {        
+    for (const filme of filmes) {
         const result = await tmdb.find({ id: filme.id, external_source: 'imdb_id', language: "pt-BR" });
         const genreList = await getGenreList("movie");
         const movie = result.movie_results[0];
@@ -33,7 +33,7 @@ async function getMovieStream(id) {
     const stream = resposta.map((item) => {
         return {
             name: `Pixel Movies - ${item.qualidade}`,
-            description: `${item.name.replace(",", "")} - ${item.qualidade}\n Obrigado por utilizar o Pixel Movies!\n Contribua em livepix.gg/stguten`,
+            description: `${item.name.replace(",", "")} - ${item.qualidade}\nObrigado por utilizar o Pixel Movies!\nContribua em livepix.gg/stguten`,
             url: item.link
         }
     });
@@ -41,7 +41,10 @@ async function getMovieStream(id) {
 }
 
 async function adicionarFilme(req, res, next) {
-    if (req.params.tipo === 'serie') next();
+    if (req.params.tipo === 'serie') { 
+        next();
+        return;
+    };
     const { codigo, nome, qualidade1080, qualidade720, qualidade480 } = req.body;
     const obj1080 = { "1080p": qualidade1080 };
     const obj720 = { "720p": qualidade720 };
