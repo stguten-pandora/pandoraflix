@@ -34,7 +34,10 @@ async function getMovieStream(id) {
         return {
             name: `Pixel Movies - ${item.qualidade}`,
             description: `${item.name.replace(",", "")} - ${item.qualidade}\nObrigado por utilizar o Pixel Movies!\nContribua em livepix.gg/stguten`,
-            url: item.link
+            url: item.link,
+            behaviorHints: {
+                bingeGroup: `pixelmovies|${item.qualidade}`
+            }
         }
     });
     return stream || [];

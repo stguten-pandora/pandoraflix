@@ -34,7 +34,10 @@ async function getSerieStream(id) {
         return {
             name: `Pixel Séries - ${item.qualidade}`,
             description: `${item.name.replace(",", "")} - ${item.qualidade}\nObrigado por utilizar o Pixel Séries!\nContribua em livepix.gg/stguten`,
-            url: item.link
+            url: item.link,            
+            behaviorHints: {
+                bingeGroup: `pixelmovies|${item.qualidade}`
+            }
         }
     });
     return stream || []; 
