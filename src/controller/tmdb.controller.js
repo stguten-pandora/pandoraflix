@@ -17,26 +17,39 @@ async function getGenreList(type) {
     }
 }
 
-async function getTmdbId(imdbId){
-    const result = await tmdb.find({ id: imdbId, external_source: 'imdb_id', language: 'pt-BR'});
+async function getTmdbId(imdbId) {
+    const result = await tmdb.find({ id: imdbId, external_source: 'imdb_id', language: 'pt-BR' });
     for (const key in result) {
-        if(result[key].length !== 0){
+        if (result[key].length !== 0) {
             return result[key][0].id;
         }
-    }    
+    }
 }
 
-async function getLogos(tmdbId, type){
+async function getLogos(tmdbId, type) {
     switch (type) {
         case "movie":
-            const imagemFilme = await tmdb.movieImages({ id: tmdbId, language: 'pt'});
+            const imagemFilme = await tmdb.movieImages({ id: tmdbId, language: 'pt' });
             return imagemFilme.logos.length > 0 ? `https://image.tmdb.org/t/p/original${imagemFilme.logos[0].file_path}` : null;
         case "serie":
-            const imagemSerie = await tmdb.tvImages({ id: tmdbId, language: 'pt'});
-            return imagemSerie.logos.length > 0 ? `https://image.tmdb.org/t/p/original${imagemSerie.logos[0].file_path}` : null;  
+            const imagemSerie = await tmdb.tvImages({ id: tmdbId, language: 'pt' });
+            return imagemSerie.logos.length > 0 ? `https://image.tmdb.org/t/p/original${imagemSerie.logos[0].file_path}` : null;
         default:
             break;
     }
 }
 
-export { getGenreList, getTmdbId, getLogos};
+async function getBasicInfo(req, res) {
+    const { imdbcode } = req.query;
+    const response = await fetch(`https://api.themoviedb.org/3/find/${imdbcode}?external_source=imdb_id&language=pt-BR`, {
+        headers: {
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlNGM3OTgxYzE5MjEyMmM0Njg5MWRiMmJiM2I0YTY5MSIsInN1YiI6IjY2MGY0NDY3M2Y4ZWRlMDE3Y2UyYThiMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Z7cX4fHRfxhVmTbVEuXvQwPzQdI8532KZViBLp6OvAw'
+        }
+    });
+    const data = await response.json();
+    const { movie_results, tv_results } = data;
+    let resultadoFinal = movie_results.length !== 0 ? movie_results : tv_results;
+    res.json(resultadoFinal);
+}
+
+export { getGenreList, getTmdbId, getLogos, getBasicInfo };

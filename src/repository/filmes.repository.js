@@ -11,10 +11,14 @@ async function getFilmeStreamById(id) {
 }
 
 async function inserirFilmes(dados){
+    const client = await pool.connect();
     try {
-        const result = await pool.query(`INSERT INTO addon.filmes VALUES ($1, $2, array[$3, $4, $5]::jsonb[])`, dados);
+        await client.query('BEGIN');
+        const result = await client.query(`INSERT INTO addon.filmes VALUES ($1, $2, array[$3, $4, $5]::jsonb[])`, dados);
+        await client.query('COMMIT');
         return result;        
     } catch (error) {
+        await client.query('ROLLBACK');
         console.log(error);
     }
 }

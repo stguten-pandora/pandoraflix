@@ -5,6 +5,7 @@ import app from "./config/express.config.js";
 import { getCatalog, getManifest, getMeta, getStream } from "./controller/addon.controller.js";
 import { adicionarFilme } from './controller/filmes.controller.js';
 import { adicionarSerie } from './controller/series.controller.js';
+import { getBasicInfo } from './controller/tmdb.controller.js';
 
 const publicDir = path.join(process.cwd(), "public");
 
@@ -20,6 +21,8 @@ app.get("/stream/:type/:id.json", getStream);
 app.post("/adicionar/:tipo", adicionarFilme, adicionarSerie);
 app.put("/modificar/:tipo");
 app.delete("/remover/:tipo");
+
+app.get("/imdb-info", getBasicInfo)
 
 
 app.get("*", (req, res) => {

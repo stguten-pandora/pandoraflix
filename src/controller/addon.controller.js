@@ -27,7 +27,7 @@ async function getCatalog(req, res) {
             break;
         case "series":
             const seriesMetas = await getSeriesCatalog();
-            responseControler(res, { metas: seriesMetas});
+            responseControler(res, { metas: seriesMetas });
             break;
         default:
             responseControler(res, { error: "Unsupported type " + type });
