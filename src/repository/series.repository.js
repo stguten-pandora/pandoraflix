@@ -11,15 +11,11 @@ async function getSeriesEpsStreamById(id) {
 }
 
 async function inserirSeries(dados){
-    const client = pool.connect();
     try {
-        await client.query('BEGIN');
-        const result = await client.query(`INSERT INTO addon.series VALUES ($1, $2, array[$3, $4, $5]::jsonb[], $6, $7)`, dados);
-        await client.query('COMMIT');
+        const result = await pool.query(`INSERT INTO addon.series VALUES ($1, $2, array[$3, $4, $5]::jsonb[], $6, $7)`, dados);
         return result;        
     } catch (error) {
-        await client.query('ROLLBACK');
-        console.log(error);
+        throw new Error('Falha ao inserir a lista de episódios da série!');
     }
 }
 

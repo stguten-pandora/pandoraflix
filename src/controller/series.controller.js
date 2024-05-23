@@ -60,6 +60,7 @@ async function adicionarSerie(req, res) {
             }
             res.status(200).send({ status: true });
         } catch (e) {
+            console.log(e.message);
             res.status(500).send({ status: false });
         }
     } else {

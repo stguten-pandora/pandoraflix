@@ -1,6 +1,6 @@
 import pg from 'pg'
 
-const Pool = pg.Pool
+const { Pool } = pg;
 
 const pool = new Pool({
     host: process.env.PG_HOST,
