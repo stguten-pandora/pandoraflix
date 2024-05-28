@@ -16,6 +16,20 @@ const episodio = document.querySelector('#episodio');
 const temporadaChk = document.querySelector('#temporadaChk');
 const episodioChk = document.querySelector('#episodioChk');
 
+function linkFormater(link) {
+    if(link === '' || !link.includes('https://pixeldrain.com/')) return null;
+    if(link.includes("/api/list/") || link.includes("/api/file/")) return link;
+
+    if(link.includes("/l/")){
+        const linkFinal = link.split("/");
+        return linkFinal[linkFinal.length -1] === "" ? null : link.replace("/l/", "/api/list/");
+    }else if(link.includes("/u/")){
+        const linkFinal = link.split("/");
+        return linkFinal[linkFinal.length - 1] === "" ? null : link.replace("/u/", "/api/file/");
+    }
+    return null;
+}
+
 function qualidadeInputSwitcher(status) {
     if (status === "enable") {
         qualidade1080.removeAttribute('disabled')
@@ -38,7 +52,7 @@ function serieSelectSwitcher(status) {
     }
 }
 
-function checkedChange(elementChk, elementText) {
+function checkedChanger(elementChk, elementText) {
     const elemento = document.getElementById(elementText);
     if (document.getElementById(elementChk).checked) {
         elemento.removeAttribute('disabled');
@@ -49,14 +63,14 @@ function checkedChange(elementChk, elementText) {
 
 function resetFormulario() {
     codigo.value = nome.value = type.value = ano.value = '';
-    qualidade1080.value = qualidade720.value = qualidade480.value = 'https://pixeldrain.com/api/';
+    qualidade1080.value = qualidade720.value = qualidade480.value = '';
     temporada.value = episodio.value = 1;
     temporadaDiv.style.display = episodioDiv.style.display = 'none';
     qualidadeInputSwitcher("disable");
     document.getElementById("episodioChk").checked = false;
     document.getElementById("temporadaChk").checked = false;
-    checkedChange("episodioChk", "episodio");
-    checkedChange("temporadaChk", "temporada");
+    checkedChanger("episodioChk", "episodio");
+    checkedChanger("temporadaChk", "temporada");
 }
 
 document.getElementById('codigoImdb').addEventListener('input', async (event) => {
@@ -93,9 +107,9 @@ document.addEventListener('submit', async (event) => {
     const dados = {
         codigo: codigo.value,
         nome: nome.value,
-        qualidade1080: qualidade1080.value.endsWith('/') ? null : qualidade1080.value,
-        qualidade720: qualidade720.value.endsWith('/') ? null : qualidade720.value,
-        qualidade480: qualidade480.value.endsWith('/') ? null : qualidade480.value
+        qualidade1080: linkFormater(qualidade1080.value),
+        qualidade720: linkFormater(qualidade720.value),
+        qualidade480: linkFormater(qualidade480.value)
     };
 
     if (type.value === "tv") {
@@ -115,5 +129,5 @@ document.addEventListener('submit', async (event) => {
     resetFormulario();
 });
 
-document.getElementById("episodioChk").addEventListener("click", () => { checkedChange("episodioChk", "episodio") });
-document.getElementById("temporadaChk").addEventListener("click", () => { checkedChange("temporadaChk", "temporada") });
+document.getElementById("episodioChk").addEventListener("click", () => { checkedChanger("episodioChk", "episodio") });
+document.getElementById("temporadaChk").addEventListener("click", () => { checkedChanger("temporadaChk", "temporada") });

@@ -45,8 +45,8 @@ async function getSerieStream(id) {
 
 async function adicionarSerie(req, res) {
     const { codigo, nome, temporada, episodio, qualidade1080, qualidade720, qualidade480 } = req.body;
-    let lista = qualidade1080 ?? qualidade720 ?? qualidade480;
-    if (lista.includes("list")) {
+    const lista = qualidade1080 ?? qualidade720 ?? qualidade480 ?? "";
+    if (lista.includes("list") && lista !== "") {
         const require = await fetch(lista);
         const response = await require.json();
         let count = 1;

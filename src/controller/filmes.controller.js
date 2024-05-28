@@ -6,6 +6,7 @@ async function getMovieCatalog() {
     const catalog = new Array();
     const filmes = await getFilmes();
 
+    //TODO: refatorar para reduzir o tempo de execução.
     for (const filme of filmes) {
         const result = await tmdb.find({ id: filme.id, external_source: 'imdb_id', language: "pt-BR" });
         const genreList = await getGenreList("movie");

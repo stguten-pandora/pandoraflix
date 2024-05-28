@@ -1,11 +1,12 @@
-import manifest from "../../.data/manifest.json" assert { type: "json" };
+import manifest from "../../.data/manifest.json" with { type: "json" };
 import { getMovieCatalog, getMovieStream } from "./filmes.controller.js";
 import { getMovieMeta, getSeriesMeta } from "./meta.controller.js";
 import { getSeriesCatalog, getSerieStream } from "./series.controller.js";
 import { getTmdbId } from "./tmdb.controller.js";
 
-async function responseControler(res, data) {
+async function responseControler(res, data) {    
     res.set({
+        "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800, stale-if-error=1209600",
         "Access-Control-Allow-Origin": "*",
         "Access-control-allow-headers": "*",
         "Content-Type": "application/json"
