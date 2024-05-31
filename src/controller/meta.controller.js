@@ -58,6 +58,7 @@ async function getSeriesMeta(tmdbId) {
     const language = "pt-BR";
 
     const serieMeta = await tmdb.tvInfo({ id: tmdbId, language: language, append_to_response: "videos,credits,external_ids" });
+    //console.log(serieMeta);
     const meta = {
       cast: Utils.parseCast(serieMeta.credits),
       country: Utils.parseCoutry(serieMeta.production_countries),
@@ -68,7 +69,7 @@ async function getSeriesMeta(tmdbId) {
       name: serieMeta.name,
       poster: `https://image.tmdb.org/t/p/w500${serieMeta.poster_path}`,
       released: new Date(serieMeta.release_date),
-      runtime: Utils.parseRunTime(serieMeta.runtime),
+      runtime: Utils.parseRunTime(serieMeta.episode_run_time),
       stats: serieMeta.status,
       type: type,
       writer: Utils.parseWriter(serieMeta.credits),
@@ -77,7 +78,7 @@ async function getSeriesMeta(tmdbId) {
       slug: Utils.parseSlug(type, serieMeta.name, serieMeta.external_ids.imdb_id),
       id: `pd:${serieMeta.external_ids.imdb_id}`,
       genres: Utils.parseGenres(serieMeta.genres),
-      releaseInfo: serieMeta.release_date ? serieMeta.release_date.substring(0, 4) : "",
+      releaseInfo: Utils.parseYear(serieMeta.status, serieMeta.first_air_date, serieMeta.last_air_date),
       logo: `https://images.metahub.space/logo/medium/${serieMeta.external_ids.imdb_id}/img`,
       trailers: Utils.parseTrailers(serieMeta.videos),
       trailerStreams: Utils.parseTrailerStream(serieMeta.videos),
