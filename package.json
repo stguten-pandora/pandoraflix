@@ -1,7 +1,7 @@
 {
-  "name": "streamio-addon",
+  "name": "pixelmovies",
   "version": "1.6.2",
-  "description": "",
+  "description": "Addon de conteudo para o aplicativo Streamio.",
   "main": "index.js",
   "type": "module",
   "scripts": {

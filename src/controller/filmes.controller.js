@@ -15,7 +15,7 @@ async function getMovieCatalog() {
         const genreList = await getGenreList("movie");
         const movie = result.movie_results[0];
         const movieMetaInfo = await tmdb.movieInfo({ id: movie.id, language: "pt-BR", append_to_response: 'videos,credits' });
-
+        
         catalog.push({
             id: `pd:${filme.id}`,
             name: movie.title,
@@ -26,10 +26,13 @@ async function getMovieCatalog() {
             posterShape: "regular",
             imdbRating: movie.vote_average.toFixed(1),
             year: movieMetaInfo.release_date ? movieMetaInfo.release_date.substring(0, 4) : "",
-            released: new Date(movieMetaInfo.release_date),
+            released: new Date(movieMetaInfo.release_date).toISOString(),
             type: "movie",
             runtime: Utils.parseRunTime(movieMetaInfo.runtime),
             description: movie.overview,
+            cast: Utils.parseCast(movieMetaInfo.credits),
+            director: Utils.parseDirector(movieMetaInfo.credits),
+            writer: Utils.parseWriter(movieMetaInfo.credits),
             links: new Array(
                 Utils.parseImdbLink(movieMetaInfo.vote_average, movieMetaInfo.imdb_id),
                 Utils.parseShareLink(movieMetaInfo.title, movieMetaInfo.imdb_id, type),
