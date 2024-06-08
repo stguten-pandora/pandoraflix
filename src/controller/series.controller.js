@@ -33,7 +33,7 @@ async function getSeriesCatalog() {
             cast: Utils.parseCast(serieMetaInfo.credits),
             director: Utils.parseDirector(serieMetaInfo.credits),
             writer: Utils.parseWriter(serieMetaInfo.credits),
-            releaseInfo: Utils.parseReleaseInfo(serieMetaInfo),
+            releaseInfo: Utils.parseYear(serieMetaInfo.status, serieMetaInfo.first_air_date, serieMetaInfo.last_air_date),
             links: new Array(
                 Utils.parseImdbLink(serieMetaInfo.vote_average, serieMetaInfo.external_ids.imdb_id),
                 Utils.parseShareLink(serieMetaInfo.name, serieMetaInfo.external_ids.imdb_id, type),

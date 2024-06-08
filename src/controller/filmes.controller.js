@@ -33,7 +33,7 @@ async function getMovieCatalog() {
             cast: Utils.parseCast(movieMetaInfo.credits),
             director: Utils.parseDirector(movieMetaInfo.credits),
             writer: Utils.parseWriter(movieMetaInfo.credits),
-            releaseInfo: Utils.parseReleaseInfo(movieMetaInfo),
+            releaseInfo: movieMetaInfo.release_date ? movieMetaInfo.release_date.substring(0, 4) : "",
             links: new Array(
                 Utils.parseImdbLink(movieMetaInfo.vote_average, movieMetaInfo.imdb_id),
                 Utils.parseShareLink(movieMetaInfo.title, movieMetaInfo.imdb_id, type),
