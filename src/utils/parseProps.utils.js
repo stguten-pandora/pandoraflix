@@ -72,8 +72,7 @@ function parseShareLink(title, imdb_id, type) {
 }
 
 function parseGenreLink(genres, type) {
-
-    const genresmap = genres.map((genre) => {
+    return genres.map((genre) => {
         return {
             name: genre.name,
             category: "Genres",
@@ -82,8 +81,6 @@ function parseGenreLink(genres, type) {
             )}`,
         };
     });
-    console.log(genresmap);
-    return genresmap;
 }
 
 function parseCreditsLink(credits) {

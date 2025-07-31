@@ -12,8 +12,6 @@ async function getSeries(page, search, genre) {
 }
 
 async function getSeriesEpsStreamById(id) {
-    console.log(id);
-
     try {
         const result = await pool.query(`
             SELECT series.episode_title as title, 
