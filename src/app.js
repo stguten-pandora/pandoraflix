@@ -1,11 +1,11 @@
 import app from "./config/express.config.js";
-import { getCatalog, getManifest, getMeta, getStream } from "./controller/addon.controller.js";
+import * as addonController from "./controller/addon.controller.js";
 
 //Stremio routes
-app.get("/manifest.json", getManifest);
-app.get("/catalog/:type/:id/:extra?.json", getCatalog);
-app.get("/meta/:type/:id.json", getMeta);
-app.get("/stream/:type/:id.json", getStream);
+app.get("/manifest.json", addonController.getManifest);
+app.get("/catalog/:type/:id/:extra?.json", addonController.getCatalog);
+app.get("/meta/:type/:id.json", addonController.getMeta);
+app.get("/stream/:type/:id.json", addonController.getStream);
 
 app.get(/(.*)/, (req, res) => {
     res.status(404).send("Endpoint não encontrado.");

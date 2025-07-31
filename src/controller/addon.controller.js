@@ -10,17 +10,17 @@ async function getManifest(_, res) {
     const genres_series = await tmdbUtil.getGenreList("serie").then((genres) => genres.map((el) => el.name).sort());
 
     const manifest = {
-        id: "br.dev.stguten.pixeldrainmovies.dev",
-        version: "1.8.0",
-        name: "Pixel Drain Movies - DEV",
-        description: "Your movies from Pixel Drain!",
+        id: "br.dev.stguten.pandoraflix",
+        version: "2.0.0",
+        name: "PandoraFlix",
+        description: "Biblioteca Pessoal gerada usando o PandoraFlix.",
         resources: ["catalog", "meta", "stream"],
         types: ["movie", "series"],
         catalogs: [
             {
-                id: "pixeldrainmovies.dev",
+                id: "pandoraflixmovies",
                 type: "movie",
-                name: "Pixel Drain Movies - DEV",
+                name: "PandoraFlix Movies",
                 pageSize: 25,
                 extra: [
                     { name: "genre", options: genres_movie },
@@ -30,9 +30,9 @@ async function getManifest(_, res) {
                 extraSupported: ["genre", "skip", "search"]
             },
             {
-                id: "pixeldrainseries.dev",
+                id: "pandoraflixseries",
                 type: "series",
-                name: "Pixel Drain Series - DEV",
+                name: "PandoraFlix Series",
                 pageSize: 25,
                 extra: [
                     { name: "genre", options: genres_series },

@@ -76,7 +76,7 @@ function parseGenreLink(genres, type) {
         return {
             name: genre.name,
             category: "Genres",
-            url: `stremio:///discover/${encodeURIComponent(process.env.HOST_NAME)}%2Fmanifest.json/${type}/pixeldrainmovies.dev?genre=${encodeURIComponent(
+            url: `stremio:///discover/${encodeURIComponent(process.env.HOST_NAME)}%2Fmanifest.json/${type}/pandoraflix?genre=${encodeURIComponent(
                 genre.name
             )}`,
         };

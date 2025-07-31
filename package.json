@@ -1,7 +1,7 @@
 {
-  "name": "pixelmovies",
+  "name": "pandoraflix-addon",
   "version": "2.0.0",
-  "description": "Addon de conteudo para o aplicativo Streamio.",
+  "description": "Gerador de biliotecas para o Stremio.",
   "main": "run.js",
   "type": "module",
   "scripts": {

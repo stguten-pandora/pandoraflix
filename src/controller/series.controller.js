@@ -48,11 +48,11 @@ async function getSerieStream(id) {
     const resposta = await seriesRepository.getSeriesEpsStreamById(id);
     const stream = resposta.map((item) => {
         return {
-            name: `Pixel Séries - ${item.qualidade}`,
-            description: `S${String(item.temporada).padStart(2, "0")}E${String(item.episodio).padStart(2, "0")} - ${item.title.replace(",", " ")}\nObrigado por utilizar o Pixel Séries!\nContribua em livepix.gg/stguten`,
+            name: `PandoraFlix Séries - ${item.qualidade}`,
+            description: `S${String(item.temporada).padStart(2, "0")}E${String(item.episodio).padStart(2, "0")} - ${item.title.replace(",", " ")}\nObrigado por utilizar o PandoraFlix Séries!\nContribua em livepix.gg/stguten`,
             url: item.link,
             behaviorHints: {
-                bingeGroup: `pixelmovies|${item.qualidade}`
+                bingeGroup: `pandoraflixseries|${item.qualidade}`
             }
         }
     });
