@@ -1,54 +1,53 @@
 import tmdb from "../config/tmdb.config.js";
 import getEpisodes from "../utils/getEpisodes.utils.js";
-import * as Utils from "../utils/parseProps.utils.js";
-import { getLogos } from "./tmdb.controller.js";
+import * as tmdbUtils from "../utils/tmdb.util.js";
+import * as parsePropsUtils from "../utils/parseProps.utils.js";
 
 async function getMovieMeta(tmdbId) {
   try {
     const type = "movie";
     const language = "pt-BR";
-
     const movieMeta = await tmdb.movieInfo({ id: tmdbId, language: language, append_to_response: "videos,credits" });
 
     const meta = {
       imdb_id: movieMeta.imdb_id,
-      cast: Utils.parseCast(movieMeta.credits),
-      country: Utils.parseCoutry(movieMeta.production_countries),
+      cast: parsePropsUtils.parseCast(movieMeta.credits),
+      country: parsePropsUtils.parseCoutry(movieMeta.production_countries),
       description: movieMeta.overview,
-      director: Utils.parseDirector(movieMeta.credits),
-      genre: Utils.parseGenres(movieMeta.genres),
+      director: parsePropsUtils.parseDirector(movieMeta.credits),
+      genre: parsePropsUtils.parseGenres(movieMeta.genres),
       imdbRating: movieMeta.vote_average.toFixed(1),
       name: movieMeta.title,
       released: new Date(movieMeta.release_date),
-      slug: Utils.parseSlug(type, movieMeta.title, movieMeta.imdb_id),
+      slug: parsePropsUtils.parseSlug(type, movieMeta.title, movieMeta.imdb_id),
       type: type,
-      writer: Utils.parseWriter(movieMeta.credits),
+      writer: parsePropsUtils.parseWriter(movieMeta.credits),
       year: movieMeta.release_date ? movieMeta.release_date.substring(0, 4) : "",
-      trailers: Utils.parseTrailers(movieMeta.videos),
+      trailers: parsePropsUtils.parseTrailers(movieMeta.videos),
       background: `https://image.tmdb.org/t/p/original${movieMeta.backdrop_path}`,
       poster: `https://image.tmdb.org/t/p/w500${movieMeta.poster_path}`,
-      runtime: Utils.parseRunTime(movieMeta.runtime),
+      runtime: parsePropsUtils.parseRunTime(movieMeta.runtime),
       id: `pd:${movieMeta.imdb_id}`,
-      genres: Utils.parseGenres(movieMeta.genres),
-      logo: await getLogos(tmdbId, "movie") || `https://images.metahub.space/logo/medium/${movieMeta.imdb_id}/img`,
+      genres: parsePropsUtils.parseGenres(movieMeta.genres),
+      logo: await tmdbUtils.getLogos(tmdbId, "movie") || `https://images.metahub.space/logo/medium/${movieMeta.imdb_id}/img`,
       releaseInfo: movieMeta.release_date ? movieMeta.release_date.substring(0, 4) : "",
-      trailerStreams: Utils.parseTrailerStream(movieMeta.videos),
+      trailerStreams: parsePropsUtils.parseTrailerStream(movieMeta.videos),
       links: new Array(
-        Utils.parseImdbLink(movieMeta.vote_average, movieMeta.imdb_id),
-        Utils.parseShareLink(movieMeta.title, movieMeta.imdb_id, type),
-        ...Utils.parseGenreLink(movieMeta.genres, type, language),
-        ...Utils.parseCreditsLink(movieMeta.credits)
+        parsePropsUtils.parseImdbLink(movieMeta.vote_average, movieMeta.imdb_id),
+        parsePropsUtils.parseShareLink(movieMeta.title, movieMeta.imdb_id, type),
+        ...parsePropsUtils.parseGenreLink(movieMeta.genres, type, language),
+        ...parsePropsUtils.parseCreditsLink(movieMeta.credits)
       ),
       behaviorHints: {
         defaultVideoId: movieMeta.imdb_id ? movieMeta.imdb_id : `pd:${movieMeta.imdb_id}`,
         hasScheduledVideos: false
       }
     };
-
-    return Promise.resolve({ meta });
+    
+    return { meta };
   } catch (error) {
     console.log(error);
-    return Promise.resolve({meta : {} });
+    return { meta: {} };
   }
 }
 
@@ -56,37 +55,36 @@ async function getSeriesMeta(tmdbId) {
   try {
     const type = "series";
     const language = "pt-BR";
-
     const serieMeta = await tmdb.tvInfo({ id: tmdbId, language: language, append_to_response: "videos,credits,external_ids" });
-    //console.log(serieMeta);
+
     const meta = {
-      cast: Utils.parseCast(serieMeta.credits),
-      country: Utils.parseCoutry(serieMeta.production_countries),
+      cast: parsePropsUtils.parseCast(serieMeta.credits),
+      country: parsePropsUtils.parseCoutry(serieMeta.production_countries),
       description: serieMeta.overview,
-      genre: Utils.parseGenres(serieMeta.genres),
+      genre: parsePropsUtils.parseGenres(serieMeta.genres),
       imdbRating: serieMeta.vote_average.toFixed(1),
       imdb_id: serieMeta.external_ids.imdb_id,
       name: serieMeta.name,
       poster: `https://image.tmdb.org/t/p/w500${serieMeta.poster_path}`,
       released: new Date(serieMeta.release_date),
-      runtime: Utils.parseRunTime(serieMeta.episode_run_time),
+      runtime: parsePropsUtils.parseRunTime(serieMeta.episode_run_time),
       stats: serieMeta.status,
       type: type,
-      writer: Utils.parseWriter(serieMeta.credits),
-      year: Utils.parseYear(serieMeta.status, serieMeta.first_air_date, serieMeta.last_air_date),
+      writer: parsePropsUtils.parseWriter(serieMeta.credits),
+      year: parsePropsUtils.parseYear(serieMeta.status, serieMeta.first_air_date, serieMeta.last_air_date),
       background: `https://image.tmdb.org/t/p/original${serieMeta.backdrop_path}`,
-      slug: Utils.parseSlug(type, serieMeta.name, serieMeta.external_ids.imdb_id),
+      slug: parsePropsUtils.parseSlug(type, serieMeta.name, serieMeta.external_ids.imdb_id),
       id: `pd:${serieMeta.external_ids.imdb_id}`,
-      genres: Utils.parseGenres(serieMeta.genres),
-      releaseInfo: Utils.parseYear(serieMeta.status, serieMeta.first_air_date, serieMeta.last_air_date),
-      logo: `https://images.metahub.space/logo/medium/${serieMeta.external_ids.imdb_id}/img`,
-      trailers: Utils.parseTrailers(serieMeta.videos),
-      trailerStreams: Utils.parseTrailerStream(serieMeta.videos),
+      genres: parsePropsUtils.parseGenres(serieMeta.genres),
+      releaseInfo: parsePropsUtils.parseYear(serieMeta.status, serieMeta.first_air_date, serieMeta.last_air_date),
+      logo: await tmdbUtils.getLogos(tmdbId, "serie") || `https://images.metahub.space/logo/medium/${serie.id}/img`,
+      trailers: parsePropsUtils.parseTrailers(serieMeta.videos),
+      trailerStreams: parsePropsUtils.parseTrailerStream(serieMeta.videos),
       links: new Array(
-        Utils.parseImdbLink(serieMeta.vote_average, serieMeta.external_ids.imdb_id),
-        Utils.parseShareLink(serieMeta.name, serieMeta.external_ids.imdb_id, type),
-        ...Utils.parseGenreLink(serieMeta.genres, type, language),
-        ...Utils.parseCreditsLink(serieMeta.credits)
+        parsePropsUtils.parseImdbLink(serieMeta.vote_average, serieMeta.external_ids.imdb_id),
+        parsePropsUtils.parseShareLink(serieMeta.name, serieMeta.external_ids.imdb_id, type),
+        ...parsePropsUtils.parseGenreLink(serieMeta.genres, type, language),
+        ...parsePropsUtils.parseCreditsLink(serieMeta.credits)
       ),
       behaviorHints: {
         defaultVideoId: null,
@@ -95,10 +93,10 @@ async function getSeriesMeta(tmdbId) {
       videos: await getEpisodes(language, tmdbId, serieMeta.external_ids.imdb_id, serieMeta.seasons)
     };
 
-    return Promise.resolve({ meta });
+    return { meta };
 
   } catch (error) {
-    return Promise.resolve({meta : {} });
+    return { meta: {} };
   }
 }
 

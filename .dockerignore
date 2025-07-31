@@ -1,0 +1,10 @@
+#IGNORAR PASTA DE MODULOS
+node_modules
+#IGNORAR PASTA DAS CONFIGURAÇÕES E AFINS
+.env
+package-lock.json
+docker-compose.yaml
+.gitignore
+.gitattributes
+docker-compose.yaml
+.github

@@ -1,56 +1,82 @@
-import * as fs from "node:fs";
-import path from "node:path";
-
-import { getMovieCatalog, getMovieStream } from "./filmes.controller.js";
-import { getMovieMeta, getSeriesMeta } from "./meta.controller.js";
-import { getSeriesCatalog, getSerieStream } from "./series.controller.js";
-import { getTmdbId } from "./tmdb.controller.js";
+import * as tmdbUtil from "../utils/tmdb.util.js";
+import * as metaController from "./meta.controller.js";
+import * as filmesController from "./filmes.controller.js";
+import * as seriesController from "./series.controller.js";
+import { responseBuilder } from "../builder/response.builder.js";
 import client from "../config/redis.config.js";
 
-const manifestPath = path.join(process.cwd(), ".data", "manifest.json");
-const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+async function getManifest(_, res) {
+    const genres_movie = await tmdbUtil.getGenreList("movie").then((genres) => genres.map((el) => el.name).sort());
+    const genres_series = await tmdbUtil.getGenreList("serie").then((genres) => genres.map((el) => el.name).sort());
 
-async function responseControler(res, data) {
-    res.set({
-        "Access-Control-Allow-Origin": "*",
-        "Access-control-allow-headers": "*",
-        "Content-Type": "application/json"
-    });
-
-    res.json(data);
-}
-
-async function getManifest(req, res) {
-    responseControler(res, manifest);
+    const manifest = {
+        id: "br.dev.stguten.pixeldrainmovies.dev",
+        version: "1.8.0",
+        name: "Pixel Drain Movies - DEV",
+        description: "Your movies from Pixel Drain!",
+        resources: ["catalog", "meta", "stream"],
+        types: ["movie", "series"],
+        catalogs: [
+            {
+                id: "pixeldrainmovies.dev",
+                type: "movie",
+                name: "Pixel Drain Movies - DEV",
+                pageSize: 25,
+                extra: [
+                    { name: "genre", options: genres_movie },
+                    { name: "skip" },
+                    { name: "search" }
+                ],
+                extraSupported: ["genre", "skip", "search"]
+            },
+            {
+                id: "pixeldrainseries.dev",
+                type: "series",
+                name: "Pixel Drain Series - DEV",
+                pageSize: 25,
+                extra: [
+                    { name: "genre", options: genres_series },
+                    { name: "skip" },
+                    { name: "search" }
+                ],
+                extraSupported: ["genre", "skip", "search"]
+            }
+        ],
+        idPrefixes: ["pd", "tt"]
+    }
+    responseBuilder(res, manifest);
 };
 
 async function getCatalog(req, res) {
     const { type } = req.params;
+    const { genre, skip, search } = req.params.extra
+        ? Object.fromEntries(new URLSearchParams(req.url.split("/").pop().split("?")[0].slice(0, -5)).entries())
+        : {};
+    const page = Math.ceil(skip ? skip / 25 + 1: undefined) || 1;
+    let metas;
+
     switch (type) {
         case "movie":
-            const catalogoFilmeCache = await client.get("catalogo:filme");
-            if (catalogoFilmeCache) {
-                responseControler(res, { metas: JSON.parse(catalogoFilmeCache) });
+            const movieCatalogCache = await client.get("catalogo:filme");
+            if (movieCatalogCache) {
+                metas = JSON.parse(movieCatalogCache).slice((page - 1) * 25, page * 25);
                 break;
             }
-            const movieMetas = await getMovieCatalog();
-            await client.set("catalogo:filme", JSON.stringify(movieMetas));
-            responseControler(res, { metas: movieMetas });
+            metas = await filmesController.getMovieCatalog(page, search, genre);
             break;
         case "series":
-            const catalogoSerieCache = await client.get("catalogo:serie");
-            if (catalogoSerieCache) {
-                responseControler(res, { metas: JSON.parse(catalogoSerieCache) });
+            const seriesCatalogCache = await client.get("catalogo:serie");
+            if (seriesCatalogCache) {
+                metas = JSON.parse(seriesCatalogCache);
                 break;
             }
-            const seriesMetas = await getSeriesCatalog();
-            await client.set("catalogo:serie", JSON.stringify(seriesMetas));
-            responseControler(res, { metas: seriesMetas });
+            metas = await seriesController.getSeriesCatalog(page, search, genre);
             break;
         default:
-            responseControler(res, { error: "Unsupported type " + type });
-            break;
+            return responseBuilder(res, { error: "Unsupported type " + type });
     }
+
+    responseBuilder(res, { metas });
 }
 
 async function getStream(req, res) {
@@ -59,52 +85,40 @@ async function getStream(req, res) {
 
     switch (type) {
         case "movie":
-            const movieStreams = await getMovieStream(movieId);
-            responseControler(res, { streams: movieStreams });
+            const movieStreams = await filmesController.getMovieStream(movieId);
+            responseBuilder(res, { streams: movieStreams });
             break;
         case "series":
-            const serieStream = await getSerieStream(movieId);
-            responseControler(res, { streams: serieStream });
+            const serieStream = await seriesController.getSerieStream(movieId);
+            responseBuilder(res, { streams: serieStream });
             break;
         default:
-            responseControler(res, { error: "Unsupported type " + type });
+            responseBuilder(res, { error: "Unsupported type " + type });
             break;
     }
 }
 
 async function getMeta(req, res) {
     const { type, id } = req.params;
-    const tmdbId = (id.includes("pd") ? await getTmdbId(id.split(":")[1]) : await getTmdbId(id));
+    const tmdbId = (id.includes("pd") ? await tmdbUtil.getTmdbId(id.split(":")[1]) : await tmdbUtil.getTmdbId(id));
 
     switch (type) {
         case "movie":
-            const metaFilmeCache = await client.get(`meta:filme:${tmdbId}`);
-            if (metaFilmeCache) {
-                responseControler(res, JSON.parse(metaFilmeCache));
-                break;
-            }
-            const movieMeta = await getMovieMeta(tmdbId);
-            await client.set(`meta:filme:${tmdbId}`, JSON.stringify(movieMeta));
-            responseControler(res, movieMeta);
+            const movieMeta = await metaController.getMovieMeta(tmdbId);
+            responseBuilder(res, movieMeta);
             break;
         case "series":
-            const metaSerieCache = await client.get(`meta:serie:${tmdbId}`);
-            if (metaSerieCache) {
-                responseControler(res, JSON.parse(metaSerieCache));
-                break;
-            }
-            const seriesMeta = await getSeriesMeta(tmdbId);
-            await client.set(`meta:serie:${tmdbId}`, JSON.stringify(seriesMeta));
-            responseControler(res, seriesMeta);
+            const seriesMeta = await metaController.getSeriesMeta(tmdbId);
+            responseBuilder(res, seriesMeta);
             break;
         default:
-            responseControler(res, { error: "Unsupported type " + type });
+            responseBuilder(res, { error: "Unsupported type " + type });
             break;
     }
 }
 
-async function paramDef(req, res, next, val) {
-    if (manifest.types.includes(val)) {
+async function paramDef(_, __, next, val) {
+    if (["movie", "series"].includes(val)) {
         next();
     } else {
         next("Unsupported type " + val);

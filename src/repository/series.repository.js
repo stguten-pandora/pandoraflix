@@ -1,27 +1,35 @@
 import pool from "../config/pg.config.js";
 
-async function getSeries() {
-    const result = await pool.query(`SELECT f.id, f.name FROM addon.series f ORDER BY name asc`);
+async function getSeries(page, search, genre) {
+    const result = await pool.query(`SELECT id, title from pandoraflix.series
+        WHERE 1 = 1 
+        ${(search ? `AND title ILIKE '%${search}%' ` : '')} 
+        ${(genre ? `AND genre @> Array['${genre}'] ` : '')} 
+        ORDER BY title 
+        LIMIT 25 OFFSET ${page} * 25`
+    );
     return result.rows;
 }
 
 async function getSeriesEpsStreamById(id) {
-    const result = await pool.query(`SELECT "name", jsonb_object_keys(unnest(links)) as qualidade, unnest(links) ->> jsonb_object_keys(unnest(links)) AS link FROM addon.series WHERE ("id" || ':' || season || ':' || episode) = $1`, [id]);
-    return result.rows;
-}
+    console.log(id);
 
-async function inserirSeries(dados){
     try {
-        const result = await pool.query(`INSERT INTO addon.series VALUES ($1, $2, array[$3, $4, $5]::jsonb[], $6, $7)`, dados);
-        return result;        
+        const result = await pool.query(`
+            SELECT series.episode_title as title, 
+                series.temporada,
+                series.episodio,
+                jsonb_object_keys(unnest(series.links)) as qualidade, 
+                unnest(series.links) ->> jsonb_object_keys(unnest(series.links)) AS link 
+            FROM pandoraflix.series series WHERE (series.id || ':' || series.temporada || ':' || series.episodio) = $1`, [id]
+        );
+        return result.rows;
     } catch (error) {
-        throw new Error('Falha ao inserir a lista de episódios da série!');
+        throw new Error('Falha ao buscar a lista de episódios da série!');
     }
 }
 
-async function atualizarLinksSeries(dados){
-    const result = await pool.query(`UPDATE addon.series SET links = array[$2, $3, $4]::jsonb[] WHERE id = $1`, dados);
-    return result;
-}
-
-export { getSeries, getSeriesEpsStreamById, inserirSeries, atualizarLinksSeries };
+export {
+    getSeries,
+    getSeriesEpsStreamById
+};

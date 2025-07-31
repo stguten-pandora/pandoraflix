@@ -17,9 +17,9 @@ function genSeasonsString(seasons) {
 
 async function getEpisodes(language, tmdbId, imdb_id, seasons) {
     const seasonString = genSeasonsString(seasons);
-    const episodes = [];    
+    const episodes = [];
     await Promise.all(
-        seasonString.map(async (el) => {
+        seasonString.map(async (el) => {         
             await tmdb.tvInfo({ id: tmdbId, language, append_to_response: el })
                 .then((res) => {
                     const splitSeasons = el.split(",");

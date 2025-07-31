@@ -1,0 +1,33 @@
+version: "3"
+networks:
+  pandora:
+    name: pandora
+    driver: bridge
+    external: false    
+services:
+  pandora-pandoraflix-api:
+    image: stgutem/pandora-pandoraflix:latest
+    container_name: pandora-pandoraflix
+    ports:
+      - ${APP_PORT}:3000
+    environment:
+      - TMDB_KEY=${TMDB_KEY}
+      - HOST_NAME=${HOSTNAME}
+      - PG_HOST=${PG_HOST}
+      - PG_USER=${PG_USER}
+      - PG_PASS=${PG_PASS}
+      - PG_DB=${PG_DB}
+      - PG_PORT=${PG_PORT}
+      - REDIS_HOST=redis://pandoraflix-redis:6379
+      - TZ=America/Fortaleza
+    networks:
+      - pandora
+    restart: unless-stopped
+    depends_on:
+      - pandoraflix-redis
+  pandoraflix-redis:
+    image: redis:latest
+    container_name: pandoraflix-redis
+    networks:
+      - pandora
+    restart: unless-stopped

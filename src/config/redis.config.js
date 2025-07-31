@@ -1,11 +1,13 @@
 import { createClient } from 'redis';
 
 const client = createClient({
-    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
-    username: process.env.REDIS_USERNAME,
-    password: process.env.REDIS_PASS,
+    url: process.env.REDIS_URL,
 });
 
-await client.connect();
+try {
+    await client.connect();
+} catch (error) {
+    console.error(error.message);
+}
 
 export default client;

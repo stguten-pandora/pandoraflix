@@ -1,4 +1,4 @@
-import {MovieDb} from 'moviedb-promise';
+import { MovieDb } from 'moviedb-promise';
 
 const tmdb = new MovieDb(process.env.TMDB_KEY);
 

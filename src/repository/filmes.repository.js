@@ -1,31 +1,27 @@
 import pool from "../config/pg.config.js";
 
-async function getFilmes() {
-    const result = await pool.query(`SELECT f.id, f.name FROM addon.filmes f ORDER BY name ASC`);
+async function getFilmes(page, search, genre) {
+    const result = await pool.query(`SELECT id, title from pandoraflix.filmes
+        WHERE 1 = 1 
+        ${(search ? `AND title ILIKE '%${search}%' ` : '')} 
+        ${(genre ? `AND genre @> Array['${genre}'] ` : '')} 
+        ORDER BY title 
+        LIMIT 25 OFFSET ${page} * 25`
+    );
     return result.rows;
 }
 
 async function getFilmeStreamById(id) {
-    const result = await pool.query(`SELECT "name" , jsonb_object_keys(unnest(links)) as qualidade, unnest(links) ->> jsonb_object_keys(unnest(links)) AS link FROM addon.filmes WHERE "id" = $1`, [id]);
+    const result = await pool.query(`
+        SELECT filmes.title, 
+            jsonb_object_keys(unnest(links)) as qualidade, 
+            unnest(links) ->> jsonb_object_keys(unnest(links)) AS link 
+        FROM pandoraflix.filmes filmes WHERE "id" = $1`, [id]
+    );
     return result.rows;
 }
 
-async function inserirFilmes(dados){
-    const client = await pool.connect();
-    try {
-        await client.query('BEGIN');
-        const result = await client.query(`INSERT INTO addon.filmes VALUES ($1, $2, array[$3, $4, $5]::jsonb[])`, dados);
-        await client.query('COMMIT');
-        return result;        
-    } catch (error) {
-        await client.query('ROLLBACK');
-        console.log(error);
-    }
-}
-
-async function atualizarLinksFilmes(dados){
-    const result = await pool.query(`UPDATE addon.filmes SET links = array['{"1080p": $2, "720p": $3, "480p": $4}']::jsonb[] WHERE id = $1`, dados);
-    return result;
-}
-
-export { getFilmes, getFilmeStreamById, inserirFilmes, atualizarLinksFilmes };
+export {
+    getFilmes,
+    getFilmeStreamById
+};
