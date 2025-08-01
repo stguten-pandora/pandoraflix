@@ -7,11 +7,11 @@ app.get("/catalog/:type/:id/:extra?.json", addonController.getCatalog);
 app.get("/meta/:type/:id.json", addonController.getMeta);
 app.get("/stream/:type/:id.json", addonController.getStream);
 
-app.get(/(.*)/, (req, res) => {
+app.get(/(.*)/, (_, res) => {
     res.status(404).send("Endpoint não encontrado.");
 });
 
-app.use((err, _, res, next) => {
+app.use((err, _, res, __) => {
     console.error(err);
     res.status(500).send("Erro interno.");
 });

@@ -81,7 +81,9 @@ async function getCatalog(req, res) {
 
 async function getMeta(req, res) {
     const { type, id } = req.params;
-    const tmdbId = id.includes("pd") ? await tmdbUtil.getTmdbId(decodeURIComponent(id).split(":")[1]) : await tmdbUtil.getTmdbId(id);
+    const tmdbId = id.includes("pd") 
+        ? await tmdbUtil.getTmdbId(decodeURIComponent(id).split(":")[1]) 
+        : await tmdbUtil.getTmdbId(decodeURIComponent(id));
     switch (type) {
         case "movie":
             const movieMeta = await metaController.getMovieMeta(tmdbId);
@@ -99,7 +101,7 @@ async function getMeta(req, res) {
 
 async function getStream(req, res) {
     const { type, id } = req.params;
-    const movieId = id.includes("pd") ? id.split(":")[1] : id;
+    const movieId = id.includes("pd") ? decodeURIComponent(id).split(":")[1] : decodeURIComponent(id);
 
     switch (type) {
         case "movie":

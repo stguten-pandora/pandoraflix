@@ -1,6 +1,6 @@
 import tmdb from "../config/tmdb.config.js";
-import * as Utils from "../utils/parseProps.utils.js";
 import * as tmdbUtil from "../utils/tmdb.util.js";
+import * as Utils from "../utils/parseProps.utils.js";
 import * as filmesRepository from "../repository/filmes.repository.js";
 
 const genreList = await tmdbUtil.getGenreList("movie");
