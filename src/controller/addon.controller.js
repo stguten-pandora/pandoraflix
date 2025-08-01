@@ -11,7 +11,7 @@ async function getManifest(_, res) {
 
     const manifest = {
         id: "br.dev.stguten.pandoraflix",
-        version: "2.0.0",
+        version: "2.1.0",
         name: "PandoraFlix",
         description: "Biblioteca Pessoal gerada usando o PandoraFlix.",
         resources: ["catalog", "meta", "stream"],
