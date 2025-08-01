@@ -45,7 +45,7 @@ async function getManifest(_, res) {
         idPrefixes: ["pd", "tt"]
     }
     responseBuilder(res, manifest);
-};
+}
 
 async function getCatalog(req, res) {
     const { type } = req.params;
@@ -67,7 +67,7 @@ async function getCatalog(req, res) {
         case "series":
             const seriesCatalogCache = await client.get("catalogo:serie");
             if (seriesCatalogCache) {
-                metas = JSON.parse(seriesCatalogCache);
+                metas = JSON.parse(seriesCatalogCache).slice((page - 1) * 25, page * 25);
                 break;
             }
             metas = await seriesController.getSeriesCatalog(page, search, genre);
@@ -79,9 +79,27 @@ async function getCatalog(req, res) {
     responseBuilder(res, { metas });
 }
 
+async function getMeta(req, res) {
+    const { type, id } = req.params;
+    const tmdbId = id.includes("pd") ? await tmdbUtil.getTmdbId(decodeURIComponent(id).split(":")[1]) : await tmdbUtil.getTmdbId(id);
+    switch (type) {
+        case "movie":
+            const movieMeta = await metaController.getMovieMeta(tmdbId);
+            responseBuilder(res, movieMeta);
+            break;
+        case "series":
+            const seriesMeta = await metaController.getSeriesMeta(tmdbId);
+            responseBuilder(res, seriesMeta);
+            break;
+        default:
+            responseBuilder(res, { error: "Unsupported type " + type });
+            break;
+    }
+}
+
 async function getStream(req, res) {
     const { type, id } = req.params;
-    const movieId = (id.includes("pd") ? id.split(":")[1] : id);
+    const movieId = id.includes("pd") ? id.split(":")[1] : id;
 
     switch (type) {
         case "movie":
@@ -91,25 +109,6 @@ async function getStream(req, res) {
         case "series":
             const serieStream = await seriesController.getSerieStream(movieId);
             responseBuilder(res, { streams: serieStream });
-            break;
-        default:
-            responseBuilder(res, { error: "Unsupported type " + type });
-            break;
-    }
-}
-
-async function getMeta(req, res) {
-    const { type, id } = req.params;
-    const tmdbId = (id.includes("pd") ? await tmdbUtil.getTmdbId(id.split(":")[1]) : await tmdbUtil.getTmdbId(id));
-
-    switch (type) {
-        case "movie":
-            const movieMeta = await metaController.getMovieMeta(tmdbId);
-            responseBuilder(res, movieMeta);
-            break;
-        case "series":
-            const seriesMeta = await metaController.getSeriesMeta(tmdbId);
-            responseBuilder(res, seriesMeta);
             break;
         default:
             responseBuilder(res, { error: "Unsupported type " + type });

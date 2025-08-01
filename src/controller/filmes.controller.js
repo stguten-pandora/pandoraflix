@@ -49,8 +49,8 @@ async function getMovieStream(id) {
     const resposta = await filmesRepository.getFilmeStreamById(id);
     const stream = resposta.map((item) => {
         return {
-            name: `PandoraFlix Movies\n${item.qualidade}`,
-            description: `${item.title.replace(",", " ")} - ${item.qualidade}\nObrigado por utilizar o PandoraFlix Movies!\nContribua em livepix.gg/stguten`,
+            name: `PandoraFlix\n${item.qualidade}`,
+            description: `${item.title.replace(",", " ")} - ${item.qualidade}\nObrigado por utilizar o PandoraFlix!\nContribua em livepix.gg/stguten`,
             url: item.link,
             behaviorHints: {
                 bingeGroup: `pandoraflixmovies|${item.qualidade}`
