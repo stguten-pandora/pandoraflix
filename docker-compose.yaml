@@ -6,7 +6,7 @@ networks:
     external: false    
 services:
   pandora-pandoraflix-api:
-    image: stgutem/pandora-pandoraflix:latest
+    image: stgutem/pandoraflix:latest
     container_name: pandora-pandoraflix
     ports:
       - ${APP_PORT}:3000
@@ -18,7 +18,7 @@ services:
       - PG_PASS=${PG_PASS}
       - PG_DB=${PG_DB}
       - PG_PORT=${PG_PORT}
-      - REDIS_HOST=redis://pandoraflix-redis:6379
+      - REDIS_HOST=pandoraflix-redis
       - TZ=America/Fortaleza
     networks:
       - pandora

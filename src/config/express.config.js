@@ -6,6 +6,7 @@ import { paramDef } from "../controller/addon.controller.js";
 const app = express();
 
 app.param("type", paramDef);
+
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
